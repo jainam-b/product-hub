@@ -1,7 +1,20 @@
-// src/store/productSlice.ts
+// store/productSlice.ts
+
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type Product = Record<string, any>;
+// store/productSlice.ts
+
+export interface Product {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  category: string;
+  stock: number;
+  rating: number;
+  thumbnail: string;
+}
+
 
 interface ProductState {
   products: Product[];
@@ -19,24 +32,17 @@ const productSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {
-    setProducts: (state, action: PayloadAction<Product[]>) => {
+    setProducts(state, action: PayloadAction<Product[]>) {
       state.products = action.payload;
-      state.loading = false; // Set loading to false when products are set
     },
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload; // Manage loading state
+    setLoading(state, action: PayloadAction<boolean>) {
+      state.loading = action.payload;
     },
-    setError: (state, action: PayloadAction<string>) => {
-      state.error = action.payload; // Manage error state
-    },
-    addProduct: (state, action: PayloadAction<Product>) => {
-      state.products.push(action.payload);
-    },
-    removeProduct: (state, action: PayloadAction<number>) => {
-      state.products = state.products.filter((_, index) => index !== action.payload);
+    setError(state, action: PayloadAction<string | null>) {
+      state.error = action.payload;
     },
   },
 });
 
-export const { setProducts, setLoading, setError, addProduct, removeProduct } = productSlice.actions;
+export const { setProducts, setLoading, setError } = productSlice.actions;
 export default productSlice.reducer;
