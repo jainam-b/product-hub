@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setProducts, setLoading, setError } from '../store/productSlice';
 import { setCategories } from '../store/categorySlice';
 import { RootState, AppDispatch } from '../store/store';
+import { useRouter } from 'next/navigation'; // Importing useRouter
 
 type Product = Record<string, any>;
 
@@ -15,13 +16,14 @@ interface Category {
 
 const ProductList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter(); // Initialize router
   const { products, loading, error } = useSelector((state: RootState) => state.products);
   const categories = useSelector((state: RootState) => state.categories.categories);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const fetchProducts = useCallback(async (categorySlug?: string) => {
     dispatch(setLoading(true));
-    dispatch(setError(null));
+    
     try {
       const url = categorySlug
         ? `https://dummyjson.com/products/category/${categorySlug}?limit=10`
@@ -48,7 +50,7 @@ const ProductList: React.FC = () => {
       }
       const data = await response.json();
       
-      // Check if the data is an array of strings or objects
+      // Format categories
       const formattedCategories: Category[] = data.map((category: string | Category) => {
         if (typeof category === 'string') {
           return {
@@ -56,7 +58,6 @@ const ProductList: React.FC = () => {
             slug: category.toLowerCase()
           };
         } else {
-          // Assume it's already in the correct format
           return {
             name: category.name || category.slug,
             slug: category.slug || category.name.toLowerCase()
@@ -71,12 +72,17 @@ const ProductList: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    // Get initial category from query params
+    const urlParams = new URLSearchParams(window.location.search);
+    const category = urlParams.get('category');
+    setSelectedCategory(category);
     fetchCategories();
-    fetchProducts();
+    fetchProducts(category);
   }, [fetchCategories, fetchProducts]);
 
   const handleCategoryClick = (categorySlug: string) => {
     setSelectedCategory(categorySlug);
+    router.push(`?category=${categorySlug}`); // Update the URL with the selected category
     fetchProducts(categorySlug);
   };
 
