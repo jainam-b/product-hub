@@ -1,8 +1,6 @@
-// store/productSlice.ts
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-// store/productSlice.ts
 
 export interface Product {
   id: number;

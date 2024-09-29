@@ -1,32 +1,29 @@
-// components/ProductItem.tsx
-
-import React from 'react';
-
-interface Product {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  category: string;
-  stock: number;
-  rating: number;
-  thumbnail: string;
-}
+import React from "react";
+import Image from "next/image";
 
 interface ProductItemProps {
-  product: Product;
+  product: {
+    id: number;
+    title: string;
+    description: string;
+    price: number;
+    thumbnail: string;
+  };
 }
 
 const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
   return (
-    <div key={product.id} className="border p-4 rounded shadow-md hover:shadow-lg transition">
-      <img className="h-40 w-full object-cover rounded-md mb-2" src={product.thumbnail} alt={product.title} />
-      <h2 className="text-lg font-semibold">{product.title}</h2>
-      <p className="text-gray-700 line-clamp-2">{product.description}</p>
-      <p className="font-bold text-lg">Price: ${product.price?.toFixed(2)}</p>
-      <p className="text-gray-500">Category: {product.category}</p>
-      <p className="text-gray-500">Stock: {product.stock}</p>
-      <p className="text-gray-500">Rating: {product.rating?.toFixed(1)} ⭐</p>
+    <div className="border p-4 rounded-lg">
+      <Image
+        src={product.thumbnail}
+        alt={product.title}
+        width={200}
+        height={200}
+        className="object-cover"
+      />
+      <h2 className="text-xl font-bold">{product.title}</h2>
+      <p>{product.description}</p>
+      <p className="text-lg font-semibold">${product.price}</p>
     </div>
   );
 };
